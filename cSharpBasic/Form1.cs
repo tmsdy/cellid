@@ -79,9 +79,12 @@
                 for (int i = 0; i < str.Length; i++)
                 {
                     str[i] = str[i].Replace("\r", string.Empty);
-                    strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua;
-                    this.backgroundWorker1.RunWorkerAsync(strAllParam);
+                    //strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua;
+                    //this.backgroundWorker1.RunWorkerAsync(strAllParam);
 
+                    this.textBox2.Text += http_request.backdata(bm, dsmpUrl, str[i], ua);
+                    
+                    this.textBox2.AppendText("\r\n");
 
                 }
                 this.toolStripStatusLabel1.Text = "I'm ready!";
