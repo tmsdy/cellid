@@ -40,6 +40,8 @@
             //this.textBox4.Text = FileWrite.ReadFile(this.basicstring + @"\4.txt");
            this.toolStripStatusLabel1.Text = "I'm ready!";
             //Process.Start("IEXPLORE.EXE", "http://www.pxkt.com/");  
+           CheckForIllegalCrossThreadCalls = false;
+             
         }
 
         //private void button1_Click(object sender, EventArgs e)
@@ -76,15 +78,21 @@
                 this.toolStripStatusLabel1.Text = "I'm searching";
                 string bm = this.comboBox1.Text.ToString();
                 string ua = this.textBox4.Text.ToString();
+                Thread[] thread = new Thread[str.Length];
                 for (int i = 0; i < str.Length; i++)
                 {
                     str[i] = str[i].Replace("\r", string.Empty);
-                    //strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua;
+                    strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua;
                     //this.backgroundWorker1.RunWorkerAsync(strAllParam);
 
-                    this.textBox2.Text += http_request.backdata(bm, dsmpUrl, str[i], ua);
+                    //this.textBox2.Text += http_request.backdata(bm, dsmpUrl, str[i], ua);
                     
-                    this.textBox2.AppendText("\r\n");
+                    //this.textBox2.AppendText("\r\n");
+
+                    thread[i] = new Thread(new ParameterizedThreadStart(cellmap_api));
+                    thread[i].Name = i.ToString();
+                    thread[i].IsBackground = true;
+                    thread[i].Start(strAllParam);
 
                 }
                 this.toolStripStatusLabel1.Text = "I'm ready!";
@@ -92,15 +100,23 @@
             }
 
         }
+        private void cellmap_api(object obj)
+        {
+            string strAllParam = obj.ToString();
+            string[] strparam = strAllParam.Split('\r');
+            this.textBox2.AppendText( http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3]));
+            this.textBox2.AppendText("\r\n");
+            Thread.CurrentThread.Abort();
+        }
+
+
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             string strAllParam = e.Argument.ToString();
             string[] strparam = strAllParam.Split('\r');
             e.Result = http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3]);
-
-
-
         }
+
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -214,7 +230,6 @@
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox2.Size = new System.Drawing.Size(700, 362);
             this.textBox2.TabIndex = 4;
-            this.textBox2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox2_KeyUp);
             // 
             // textBox3
             // 
@@ -361,13 +376,7 @@
 
         }
 
-        private void textBox2_KeyUp(object sender, KeyEventArgs e)
-        {
-            if ((e.Modifiers == Keys.Control) && (e.KeyCode == Keys.A))
-            {
-                ((TextBox) sender).SelectAll();
-            }
-        }
+
 
         private void textBox3_KeyUp(object sender, KeyEventArgs e)
         {
