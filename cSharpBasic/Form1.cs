@@ -105,7 +105,7 @@
             string strAllParam = obj.ToString();
             string[] strparam = strAllParam.Split('\r');
             this.textBox2.AppendText( http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3]));
-            this.textBox2.AppendText("\r\n");
+            this.textBox2.AppendText("\r\n"); 
             Thread.CurrentThread.Abort();
         }
 
