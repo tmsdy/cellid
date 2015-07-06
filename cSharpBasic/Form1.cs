@@ -27,13 +27,15 @@
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripMenuItem 退出ToolStripMenuItem;
         private ToolStripMenuItem 显示ToolStripMenuItem;
-        private BackgroundWorker backgroundWorker1;
+        private ComboBox comboBox2;
         private ToolStripMenuItem 最小化ToolStripMenuItem;
 
         public Form1()
         {
             this.InitializeComponent();
             this.comboBox1.SelectedIndex = 0;
+
+            this.comboBox2.SelectedIndex = 0;
             //this.textBox1.Text = FileWrite.ReadFile(this.basicstring + @"\1.txt");
             //this.textBox2.Text = FileWrite.ReadFile(this.basicstring + @"\2.txt");
             //this.textBox3.Text = FileWrite.ReadFile(this.basicstring + @"\3.txt");
@@ -78,12 +80,12 @@
                 this.toolStripStatusLabel1.Text = "I'm searching";
                 string bm = this.comboBox1.Text.ToString();
                 string ua = this.textBox4.Text.ToString();
+                int isJson = (this.comboBox2.SelectedIndex);
                 Thread[] thread = new Thread[str.Length];
                 for (int i = 0; i < str.Length; i++)
                 {
                     str[i] = str[i].Replace("\r", string.Empty);
-                    strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua;
-                    //this.backgroundWorker1.RunWorkerAsync(strAllParam);
+                    strAllParam = bm + "\r" + dsmpUrl + "\r" + str[i] + "\r" + ua + "\r" + isJson.ToString();
 
                     //this.textBox2.Text += http_request.backdata(bm, dsmpUrl, str[i], ua);
                     
@@ -104,30 +106,13 @@
         {
             string strAllParam = obj.ToString();
             string[] strparam = strAllParam.Split('\r');
-            this.textBox2.AppendText( http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3]));
+            this.textBox2.AppendText(http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3], strparam[4]));
             this.textBox2.AppendText("\r\n"); 
             Thread.CurrentThread.Abort();
         }
 
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string strAllParam = e.Argument.ToString();
-            string[] strparam = strAllParam.Split('\r');
-            e.Result = http_request.backdata(strparam[0], strparam[1], strparam[2], strparam[3]);
-        }
 
-
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-
-        }
-
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            this.textBox2.Text += e.Result.ToString();
-            this.textBox2.AppendText("\r\n");
-        }
         void EventSleep(int t)
         {
             int times = t * 1000;
@@ -175,7 +160,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -344,15 +329,21 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(131, 17);
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
-            // backgroundWorker1
+            // comboBox2
             // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "x-www-form-urlencoded",
+            "json"});
+            this.comboBox2.Location = new System.Drawing.Point(274, 82);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(171, 20);
+            this.comboBox2.TabIndex = 13;
             // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1094, 560);
+            this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox4);

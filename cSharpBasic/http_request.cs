@@ -7,7 +7,7 @@
 
     internal class http_request
     {
-        public static string backdata(string bm, string DsmpUrl, string sXmlMessage, string ua)
+        public static string backdata(string bm, string DsmpUrl, string sXmlMessage, string ua, string isJson)
         {
             try
             {
@@ -19,7 +19,15 @@
                 byte[] bytes = encoding.GetBytes(sXmlMessage);
                 HttpWebRequest request = (HttpWebRequest) WebRequest.Create(DsmpUrl);
                 request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
+                if (Convert.ToBoolean(System.Int32.Parse(isJson)))
+                {
+                    request.ContentType = "application/json";
+                }
+                else
+                {
+                    request.ContentType = "application/x-www-form-urlencoded";
+                }
+                
                 request.ContentLength = bytes.Length;
                 request.UserAgent = ua;
                 Stream requestStream = request.GetRequestStream();
